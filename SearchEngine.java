@@ -28,7 +28,7 @@ class Handler implements URLHandler {
         }
         else {
             System.out.println("Path: " + url.getPath());
-            if (url.getPath().contains("/add")) {
+            if (url.getPath().contains("/search")) {
                 String[] parameters = url.getQuery().split("=");
                 if (parameters[0].equals("s")) {
                     if(dbContains(parameters[1])==-1)
@@ -38,8 +38,22 @@ class Handler implements URLHandler {
                     return "You searched for " + parameters[1] + ", query was found at " + dbContains(parameters[1]); //location of string
                 }
             }
-            return "404 Not Found!";
+            if (url.getPath().contains("/add")) {
+                String[] parameters = url.getQuery().split("=");
+                if (parameters[0].equals("s")) {
+                    if(exampleDatabase.add(parameters[1]))
+                    {
+                        return String.format("Added %s successfully" , parameters[1]);
+                    }
+                    else
+                    {
+                        return String.format("Adding %s failed." , parameters[1]);
+                    }
+                }
+                return "invalid input format";
+            }
         }
+        return "404 Not Found!";
     }
 }
 
@@ -55,3 +69,4 @@ class SearchEngine {
         Server.start(port, new Handler());
     }
 }
+
